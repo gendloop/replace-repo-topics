@@ -1,3 +1,3 @@
 # replace-repo-topics
 
-[Action_Name.yml](Action_Name.yml)
+[Replace_Repo_Topics.yml](.github/workflows/Replace_Repo_Topics.yml) 
