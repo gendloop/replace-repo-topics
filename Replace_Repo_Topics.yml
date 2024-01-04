@@ -1,0 +1,38 @@
+name: Replace_Repo_Topics
+
+permissions:
+  contents: write
+  actions: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: 'Repo Name (e.g. MyRepo)'
+        required: true
+        default: ''
+      topics:
+        description: 'Topics (e.g. "t1","t2")'
+        required: true
+        default: ''
+      token:
+        description: 'Personal Token'
+        required: false
+        default: ${{ github.token }}
+      user:
+        description: 'User Name'
+        required: false
+        default: ${{ github.actor }}
+
+
+jobs:
+  replace_repo_topics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: replace-repo-topics
+        uses: gendloop/replace-repo-topics@main
+        with:
+          token: ${{ inputs.token }}
+          user: ${{ inputs.user }}
+          repo: ${{ inputs.repo }}
+          topics: ${{ inputs.topics }}

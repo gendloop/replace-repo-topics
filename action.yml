@@ -1,68 +1,37 @@
-name: action-name
+name: replace-repo-topics
 author: gendloop
-description: 'action description'
+description: 'Replace all repository topics'
 inputs:
 # Required
-  version:
-    description: 'New version. e.g. v0.0.0'
+  repo:
+    description: 'Repo Name (e.g. MyRepo)'
     required: true
-    default: 'v0.0.0'
+    default: ''
+  topics:
+    description: 'Topics (e.g. "t1","t2")'
+    required: true
+    default: ''
+
+# Optional
   token:
     description: 'Personal token'
     required: true
     default: ${{ github.token }}
-# Optional
-  branch:
-    description: 'branch'
+  user:
+    description: 'User Name'
     required: false
-    default: main
+    default: ${{ github.actor }}
 
 runs:
   using: 'composite'
   steps:
-    - name: checkout-repo
-      uses: actions/checkout@v3
-      with:
-        token: ${{ inputs.token }}
-        fetch-depth: 0
-
-    - name: setup-node
-      uses: actions/setup-node@v3
-      with:
-        node-version: 16.x
-
-    - name: add-release-log
+    - name: replace-repo-topics
       shell: bash
-      run: npx changelogithub
-      env:
-        GITHUB_TOKEN: ${{ inputs.token }}
-
-    - name: cmd
-      shell: bash
-      working-directory: ${{ github.workspace }}
-      env:
-          GITHUB_TOKEN: ${{ inputs.token }}
       run: |
-        git config --global user.name "$GITHUB_ACTOR"
-        git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-        git checkout ${{ inputs.branch }}
-        git pull
-        repo_name=${GITHUB_REPOSITORY#*/}
-        version=${{ inputs.version }}
-        echo $repo_name
-        echo $version
-        if [[ ${version} =~ ^v(.*)\.(.*)\.(.*) ]]
-        then
-          major=${BASH_REMATCH[1]}
-          minor=${BASH_REMATCH[2]}
-          patch=${BASH_REMATCH[3]}
-        fi
-        echo $major $minor $patch
-        echo "" > config.txt
-        echo "PROJECT_NAME=${repo_name}" >> config.txt
-        echo "${repo_name}_VERSION_MAJOR=${major}" >> config.txt
-        echo "${repo_name}_VERSION_MINOR=${minor}" >> config.txt
-        echo "${repo_name}_VERSION_PATCH=${patch}" >> config.txt
-        git add .
-        (git commit -m "chore: release VERSION ${{ inputs.version }} ") || true
-        (git push) || true
+        curl -L \
+          -X PUT \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ inputs.token }}" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          https://api.github.com/repos/${{ inputs.user }}/${{ inputs.repo }}/topics \
+          -d '${"names":[${{ inputs.github.topics }}]}'
