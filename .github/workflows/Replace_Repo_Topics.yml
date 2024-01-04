@@ -17,12 +17,8 @@ on:
         default: ''
       token:
         description: 'Personal Token'
-        required: false
-        default: ${{ github.token }}
-      user:
-        description: 'User Name'
-        required: false
-        default: ${{ github.actor }}
+        required: true
+        default: ''
 
 
 jobs:
@@ -33,6 +29,5 @@ jobs:
         uses: gendloop/replace-repo-topics@main
         with:
           token: ${{ inputs.token }}
-          user: ${{ inputs.user }}
           repo: ${{ inputs.repo }}
           topics: ${{ inputs.topics }}

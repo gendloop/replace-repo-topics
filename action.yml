@@ -11,12 +11,12 @@ inputs:
     description: 'Topics (e.g. "t1","t2")'
     required: true
     default: ''
-
-# Optional
   token:
     description: 'Personal token'
     required: true
     default: ${{ github.token }}
+
+# Optional
   user:
     description: 'User Name'
     required: false
