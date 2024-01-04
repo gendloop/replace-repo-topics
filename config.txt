@@ -1,0 +1,5 @@
+
+PROJECT_NAME=replace-repo-topics
+replace-repo-topics_VERSION_MAJOR=1
+replace-repo-topics_VERSION_MINOR=0
+replace-repo-topics_VERSION_PATCH=0
